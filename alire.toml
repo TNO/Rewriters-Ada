@@ -1,6 +1,6 @@
 name = "rewriters"
-description = "Advanced manipulation of Ada code"
-version = "0.0.0"
+description = "Easy, yet advanced manipulation of Ada code"
+version = "22.0.0"
 licenses = "BSD-3-Clause"
 website = "https://github.com/TNO/Rewriters-Ada"
 tags = ["manipulation", "transformation"]
@@ -12,3 +12,6 @@ maintainers-logins = ["pjljvandelaar"]
 [[depends-on]]
 libadalang = "^22.0.0"
 rejuvenation = "^22.0.0"
+
+[[pins]]
+rejuvenation = { path = "../Rejuvenation-Ada" }  # TO BE REMOVED
