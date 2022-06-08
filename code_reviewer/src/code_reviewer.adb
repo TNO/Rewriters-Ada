@@ -2,13 +2,14 @@
 --  Performance can be limited by speed of virus scanner ;-(
 --                         running in a single thread...
 
-with Ada.Directories;     use Ada.Directories;
-with Ada.Exceptions;      use Ada.Exceptions;
-with Ada.Strings;         use Ada.Strings;
-with Ada.Strings.Fixed;   use Ada.Strings.Fixed;
-with Ada.Text_IO;         use Ada.Text_IO;
-with Libadalang.Analysis; use Libadalang.Analysis;
-with Rejuvenation;        use Rejuvenation;
+with Ada.Directories;             use Ada.Directories;
+with Ada.Environment_Variables;   use Ada.Environment_Variables;
+with Ada.Exceptions;              use Ada.Exceptions;
+with Ada.Strings;                 use Ada.Strings;
+with Ada.Strings.Fixed;           use Ada.Strings.Fixed;
+with Ada.Text_IO;                 use Ada.Text_IO;
+with Libadalang.Analysis;         use Libadalang.Analysis;
+with Rejuvenation;                use Rejuvenation;
 with Rejuvenation.Environment_Variables;
 use Rejuvenation.Environment_Variables;
 with Rejuvenation.File_Utils;     use Rejuvenation.File_Utils;
@@ -28,17 +29,15 @@ procedure Code_Reviewer is
    --  Configuration
    -----------------------------------------------------------
 
-   Source_Directory : constant String := "C:\path\to\semantic_versioning";
-   --  "C:\path\to\Dependency_Graph_Extractor-Ada";
-   --  Example to review the code within Dependency_Graph_Extractor-Ada
+   Source_Directory : constant String := "C:\path\to\Rewriters-Ada";
+   --  Example to review the code within Rewriters-Ada
 
    V_C : constant Version_Control'Class :=
      Make_Git_Version_Control (Source_Directory);
 
    Project_Filename : constant String :=
-     Source_Directory & "\semantic_versioning.gpr";
-   --  "\dependency_graph_extractor.gpr";
-   --  Example to review the Dependency_Graph_Extractor project
+     Source_Directory & "\code_reviewer\code_reviewer.gpr";
+   --  Example to review the code_reviewer project
 
    function Get_Environment_Variables return String_Maps.Map;
    --  Environment Variables for analyzed project
@@ -50,23 +49,49 @@ procedure Code_Reviewer is
    --        using `alr printenv` and regular expression matching
 
    function Get_Environment_Variables return String_Maps.Map is
+      --  TODO: make valid on linux as well.
+
       Return_Value : String_Maps.Map := String_Maps.Empty;
+      User_Name : constant String := Value ("USERNAME");
+      User_Directory : constant String := "C:\Users\" & User_Name;
+      Dependencies_Directory : constant String :=
+        "C:\path\to\Rewriters-Ada\code_reviewer\alire\cache\dependencies";
    begin
       Return_Value.Include ("ALIRE", "True");
       Return_Value.Include
         ("C_INCLUDE_PATH",
-         "C:\Users\laarpjljvd\.cache\alire\msys64\mingw64\include");
+         User_Directory & "\.cache\alire\msys64\mingw64\include");
       Return_Value.Include
         ("GPR_PROJECT_PATH",
-         "C:\path\to\semantic_versioning");
+         Source_Directory & ";" &
+         "C:\path\to\Rewriters-Ada\code_reviewer;" &
+         User_Directory &
+           "\.config\alire\cache\dependencies\gnat_native_11.2.4_2f9c5d6d;" &
+         Dependencies_Directory & "\gnatcoll_22.0.0_620c2f23;" &
+         Dependencies_Directory & "\gnatcoll_gmp_22.0.0_f3732e5d\gmp;" &
+         Dependencies_Directory & "\gnatcoll_iconv_22.0.0_f3732e5d\iconv;" &
+         Dependencies_Directory & "\langkit_support_22.0.0_d43df3a9;" &
+         Dependencies_Directory & "\libadalang_22.0.0_5f365aa4;" &
+         Dependencies_Directory & "\libgpr_22.0.0_30e39dcc\gpr;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\distrib;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\dom;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\input_sources;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\sax;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\schema;" &
+         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\unicode;" &
+         --  Rejuvenation (must be changed -- currently pin value)
+         --  Dependencies_Directory & "\rejuvenation_22.0.1_d58270fcgit status"
+         "C:\path\to\Rejuvenation-Ada"
+
+        );
       Return_Value.Include
         ("LIBRARY_PATH",
-         "C:\Users\laarpjljvd\.cache\alire\msys64\mingw64\lib");
+         User_Directory & "\.cache\alire\msys64\mingw64\lib");
       Return_Value.Include
         ("PATH",
-         "C:\Users\laarpjljvd\.cache\alire\msys64\usr\bin;" &
-         "C:\Users\laarpjljvd\.cache\alire\msys64\usr\local\bin;" &
-         "C:\Users\laarpjljvd\.cache\alire\msys64\mingw64\bin;" &
+         User_Directory & "\.cache\alire\msys64\usr\bin;" &
+         User_Directory & "\.cache\alire\msys64\usr\local\bin;" &
+         User_Directory & "\.cache\alire\msys64\mingw64\bin;" &
          "C:\Program Files\TortoiseSVN\bin;" &
          "C:\Program Files\TortoiseGit\bin;" & "C:\Program Files\Git\cmd;" &
          "C:\Program Files\Alire\bin;" & "C:\GNATPRO\23.0w-20220211\bin");
