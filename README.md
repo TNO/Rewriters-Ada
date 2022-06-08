@@ -2,7 +2,8 @@
 The Rewriters-Ada library
 enables automatic rewriting of [Ada](https://en.wikipedia.org/wiki/Ada_(programming_language))
 code based on concrete syntax.
-The Rewriters-Ada library is based on the [Rejuvenation-Ada library](https://github.com/TNO/Rejuvenation-Ada)
+The Rewriters-Ada library is build on top of the 
+[Rejuvenation-Ada library](https://github.com/TNO/Rejuvenation-Ada)
 and smoothens the manipulation process by functionality
 that combines and repeats rewrites
 and enables post processing of manipulated code, such as simplifications and pretty printing.
@@ -40,7 +41,9 @@ Snippets from diff made with [Code Reviewer](code_reviewer)
 + return (for all Acf of Acfs => Acf /= null);
 ```
 
-Example based on [aws](https://github.com/AdaCore/aws/blob/7488c0f6f4c593b51e8b61b94d245e2ff4896e33/config/ssl/aws-net-ssl__openssl.adb#L215) code
+Example based on
+[aws](https://github.com/AdaCore/aws/blob/7488c0f6f4c593b51e8b61b94d245e2ff4896e33/config/ssl/aws-net-ssl__openssl.adb#L215-L216)
+code
 ```diff
 -   Max_Overhead : Stream_Element_Count range 0 .. 2**15 := 81 with Atomic;
 -   for Max_Overhead'Size use 16;
