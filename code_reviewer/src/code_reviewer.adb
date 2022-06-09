@@ -17,6 +17,8 @@ with Rejuvenation.Pretty_Print;   use Rejuvenation.Pretty_Print;
 with Rejuvenation.Simple_Factory; use Rejuvenation.Simple_Factory;
 with Patchers;                    use Patchers;
 with Predefined_Patchers;         use Predefined_Patchers;
+with Predefined_Rewriters_If_Expression_Simplify;
+use Predefined_Rewriters_If_Expression_Simplify;
 with Commands;                    use Commands;
 with Version_Controls;            use Version_Controls;
 with Git_Version_Controls;        use Git_Version_Controls;
@@ -29,14 +31,14 @@ procedure Code_Reviewer is
    --  Configuration
    -----------------------------------------------------------
 
-   Source_Directory : constant String := "C:\path\to\Rewriters-Ada";
+   Source_Directory : constant String := "C:\path\to\json-ada";
    --  Example to review the code within Rewriters-Ada
 
    V_C : constant Version_Control'Class :=
      Make_Git_Version_Control (Source_Directory);
 
    Project_Filename : constant String :=
-     Source_Directory & "\code_reviewer\code_reviewer.gpr";
+     Source_Directory & "\json\json.gpr";
    --  Example to review the code_reviewer project
 
    function Get_Environment_Variables return String_Maps.Map;
@@ -54,36 +56,15 @@ procedure Code_Reviewer is
       Return_Value : String_Maps.Map := String_Maps.Empty;
       User_Name : constant String := Value ("USERNAME");
       User_Directory : constant String := "C:\Users\" & User_Name;
-      Dependencies_Directory : constant String :=
-        "C:\path\to\Rewriters-Ada\code_reviewer\alire\cache\dependencies";
    begin
       Return_Value.Include ("ALIRE", "True");
       Return_Value.Include
         ("C_INCLUDE_PATH",
          User_Directory & "\.cache\alire\msys64\mingw64\include");
       Return_Value.Include
-        ("GPR_PROJECT_PATH",
-         Source_Directory & ";" &
-         "C:\path\to\Rewriters-Ada\code_reviewer;" &
-         User_Directory &
-           "\.config\alire\cache\dependencies\gnat_native_11.2.4_2f9c5d6d;" &
-         Dependencies_Directory & "\gnatcoll_22.0.0_620c2f23;" &
-         Dependencies_Directory & "\gnatcoll_gmp_22.0.0_f3732e5d\gmp;" &
-         Dependencies_Directory & "\gnatcoll_iconv_22.0.0_f3732e5d\iconv;" &
-         Dependencies_Directory & "\langkit_support_22.0.0_d43df3a9;" &
-         Dependencies_Directory & "\libadalang_22.0.0_5f365aa4;" &
-         Dependencies_Directory & "\libgpr_22.0.0_30e39dcc\gpr;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\distrib;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\dom;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\input_sources;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\sax;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\schema;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\unicode;" &
-         --  Rejuvenation (must be changed -- currently pin value)
-         --  Dependencies_Directory & "\rejuvenation_22.0.1_d58270fcgit status"
-         "C:\path\to\Rejuvenation-Ada"
-
-        );
+        ("GPR_PROJECT_PATH", Source_Directory & "\json");
+      Return_Value.Include
+        ("JSON_ALIRE_PREFIX", Source_Directory & "\json");
       Return_Value.Include
         ("LIBRARY_PATH",
          User_Directory & "\.cache\alire\msys64\mingw64\lib");
@@ -98,7 +79,12 @@ procedure Code_Reviewer is
       return Return_Value;
    end Get_Environment_Variables;
 
-   Patchers : constant Patchers_Vectors.Vector := Patchers_Predefined;
+   Patcher_Boolean_If_Else_False_Expression : aliased constant Patcher :=
+     Make_Patcher
+       ("Boolean_If_Else_False_Expression",
+        Rewriter_Boolean_If_Else_False_Expression);
+   Patchers : constant Patchers_Vectors.Vector :=
+     Patchers_Vectors.To_Vector (Patcher_Boolean_If_Else_False_Expression, 1);
 
    -----------------------------------------------------------
    --  Implementation
@@ -126,8 +112,8 @@ procedure Code_Reviewer is
                Unit : Analysis_Unit :=
                  Analyze_File_In_Project (Filename, Project_Filename);
             begin
+               Put_Line ("--- " & Filename & " ---");
                if P.Prepare_Unit (Unit) then
-                  Put_Line ("--- " & Filename & " ---");
                   P.Rewrite (Unit);
                   Remove_Marks (Filename);
                   Pretty_Print_Sections (Filename, Project_Filename);
@@ -176,17 +162,8 @@ procedure Code_Reviewer is
 
    function Get_Filenames return String_Vectors.Vector;
    function Get_Filenames return String_Vectors.Vector is
-      Project_Filenames : constant String_Vectors.Vector :=
-        Get_Ada_Source_Files_From_Project (Project_Filename);
-      Return_Value : String_Vectors.Vector;
-   begin
-      for Project_Filename of Project_Filenames loop
-         if V_C.Is_Under_Version_Control (Project_Filename) then
-            Return_Value.Append (Project_Filename);
-         end if;
-      end loop;
-      return Return_Value;
-   end Get_Filenames;
+     (String_Vectors.To_Vector
+        ("C:\path\to\json-ada\json\src\json-types.adb", 1));
 
 begin
    Set (Get_Environment_Variables);

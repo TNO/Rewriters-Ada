@@ -4,7 +4,6 @@ with Rejuvenation.Finder;            use Rejuvenation.Finder;
 with Rejuvenation.Find_And_Replacer; use Rejuvenation.Find_And_Replacer;
 with Rejuvenation.Match_Patterns;    use Rejuvenation.Match_Patterns;
 with Rejuvenation.Text_Rewrites;     use Rejuvenation.Text_Rewrites;
-with Rejuvenation.Utils;             use Rejuvenation.Utils;
 
 package body Rewriters_Find_And_Replace is
 

@@ -430,7 +430,7 @@ package body Placeholder_Relations is
    function Is_Boolean_Expression
      (Match : Match_Pattern) return Boolean
    is
-      Return_Value : Boolean := False;
+      Return_Value : constant Boolean := False;  --  constant to prevent warning
    begin
       declare
          Nodes : constant Node_List.Vector := Match.Get_Nodes;
@@ -442,19 +442,24 @@ package body Placeholder_Relations is
                Assert (Check => not E.Is_Null,
                        Message => "Is_Boolean_Expression - "
                        & "Unexpectedly Expr is null");
-               --  Put_Line
-               --    ("Before P_Expression_Type - "
-               --     & Image (E.Full_Sloc_Image));
+               Put_Line
+                 ("Before P_Expression_Type - "
+                  & Image (E.Full_Sloc_Image));
                declare
-                  --  P_Expression_Type has a bug causing:
-                  --  raised LANGKIT_SUPPORT.ERRORS.PROPERTY_ERROR :
-                  --                                              stack overflow
-                  B_T_D : constant Base_Type_Decl := E.P_Expression_Type;
+                  My_Exception : exception;
                begin
-                  --  Put_Line
-                  --    ("After P_Expression_Type");
-                  Return_Value :=
-                    Is_Standard_Type_Expression (B_T_D, "Boolean");
+                  raise My_Exception
+                    with "Test that exceptions are not ignored";
+                  --  declare
+                  --     --  P_Expression_Type has a bug causing:
+                  --     --  raised LANGKIT_SUPPORT.ERRORS.PROPERTY_ERROR :
+                  --     --                                       stack overflow
+                  --     B_T_D : constant Base_Type_Decl := E.P_Expression_Type;
+                  --  begin
+                  --     Put_Line
+                  --       ("After P_Expression_Type");
+                  --     Return_Value :=
+                  --       Is_Standard_Type_Expression (B_T_D, "Boolean");
                end;
             end;
          end if;
