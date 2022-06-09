@@ -1,10 +1,7 @@
 with Ada.Assertions;                  use Ada.Assertions;
-with Ada.Containers;                  use Ada.Containers;
 with Langkit_Support.Text;            use Langkit_Support.Text;
 with Libadalang.Common;               use Libadalang.Common;
 with Rejuvenation.File_Utils;         use Rejuvenation.File_Utils;
-with Rejuvenation.Match_Patterns;     use Rejuvenation.Match_Patterns;
-with Rejuvenation.Node_Locations;     use Rejuvenation.Node_Locations;
 with Rejuvenation.Pretty_Print;       use Rejuvenation.Pretty_Print;
 with Rejuvenation.String_Utils;       use Rejuvenation.String_Utils;
 with Rejuvenation.Text_Rewrites;      use Rejuvenation.Text_Rewrites;
@@ -13,7 +10,6 @@ with Rewriters_Repeat;                use Rewriters_Repeat;
 with Rewriters_Sequence;              use Rewriters_Sequence;
 with Rewriters_Vectors;               use Rewriters_Vectors;
 with Match_Accepters_Combine;         use Match_Accepters_Combine;
-with Match_Accepters_Function_Access; use Match_Accepters_Function_Access;
 with Match_Accepters_Marked;          use Match_Accepters_Marked;
 
 package body Mark_Utils is
