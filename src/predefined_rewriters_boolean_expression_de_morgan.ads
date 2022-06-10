@@ -14,12 +14,12 @@ package Predefined_Rewriters_Boolean_Expression_De_Morgan is
    Rewrite_De_Morgan_Not_And : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern ("not ($S_A and then $S_B)", Expr_Rule),
-        Make_Pattern ("(not ($S_A)) or else (not ($S_B))", Expr_Rule));
+        Make_Pattern ("((not ($S_A)) or else (not ($S_B)))", Expr_Rule));
 
    Rewrite_De_Morgan_Not_Or : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern ("not ($S_A or else $S_B)", Expr_Rule),
-        Make_Pattern ("(not ($S_A)) and then (not ($S_B))", Expr_Rule));
+        Make_Pattern ("((not ($S_A)) and then (not ($S_B)))", Expr_Rule));
 
    Rewrite_De_Morgan_Not_All_Range :
      aliased constant Rewriter_Find_And_Replace :=
