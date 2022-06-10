@@ -16,5 +16,3 @@ rewriters = "^22.0.0"
 
 [[pins]]
 rewriters = { path = ".." }
-rejuvenation = { path = "../../Rejuvenation-Ada" }  # TO BE REMOVED
-

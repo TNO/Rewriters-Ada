@@ -12,6 +12,3 @@ maintainers-logins = ["pjljvandelaar"]
 [[depends-on]]
 libadalang = "^22.0.0"
 rejuvenation = "^22.0.0"
-
-[[pins]]
-rejuvenation = { path = "../Rejuvenation-Ada" }  # TO BE REMOVED
