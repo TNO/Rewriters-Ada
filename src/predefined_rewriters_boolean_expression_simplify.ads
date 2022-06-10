@@ -108,14 +108,14 @@ package Predefined_Rewriters_Boolean_Expression_Simplify is
    Rewriter_Equal_False : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern ("$S_Expr = false", Expr_Rule),
-        Make_Pattern ("not $S_Expr", Expr_Rule),
+        Make_Pattern ("not ($S_Expr)", Expr_Rule),
         Make_Match_Accepter_Function_Access (Accept_Expr_Boolean'Access));
    --  TODO: do we also need the symmetric variant: false = $S_Expr?
 
    Rewriter_Different_True : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern ("$S_Expr /= true", Expr_Rule),
-        Make_Pattern ("not $S_Expr", Expr_Rule),
+        Make_Pattern ("not ($S_Expr)", Expr_Rule),
         Make_Match_Accepter_Function_Access (Accept_Expr_Boolean'Access));
    --  TODO: do we also need the symmetric variant: true /= $S_Expr?
 
