@@ -51,3 +51,5 @@ code
 +      Atomic,
 +      Size => 16;
 ```
+
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/rewriters.json)](https://alire.ada.dev/crates/rewriters.html)
