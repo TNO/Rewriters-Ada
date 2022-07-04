@@ -79,10 +79,7 @@ procedure Code_Reviewer is
          Dependencies_Directory & "\xmlada_22.0.0_b322ae27\sax;" &
          Dependencies_Directory & "\xmlada_22.0.0_b322ae27\schema;" &
          Dependencies_Directory & "\xmlada_22.0.0_b322ae27\unicode;" &
-         --  Rejuvenation (must be changed -- currently pin value)
-         --  Dependencies_Directory & "\rejuvenation_22.0.1_d58270fcgit status"
-         "C:\path\to\Rejuvenation-Ada"
-
+         Dependencies_Directory & "\rejuvenation_22.0.1_a6990d10"
         );
       Return_Value.Include
         ("LIBRARY_PATH",
