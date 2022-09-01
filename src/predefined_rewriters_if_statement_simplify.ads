@@ -7,10 +7,6 @@ with Rewriters_Find_And_Replace;      use Rewriters_Find_And_Replace;
 with Match_Accepters_Function_Access; use Match_Accepters_Function_Access;
 
 package Predefined_Rewriters_If_Statement_Simplify is
-   --  TODO:
-   --  Use Is_Negation function to capture
-   --  all patterns in which the two branches can be swapped
-   --  in a single pattern.
 
    Rewriter_If_True_Stmt : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace

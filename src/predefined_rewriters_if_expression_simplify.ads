@@ -9,10 +9,6 @@ with Rewriters_Vectors;               use Rewriters_Vectors;
 with Match_Accepters_Function_Access; use Match_Accepters_Function_Access;
 
 package Predefined_Rewriters_If_Expression_Simplify is
-   --  TODO:
-   --  Use Is_Negation function to capture
-   --  all patterns in which the two alternatives can be swapped
-   --  in a single pattern.
 
    Rewriter_If_True_Expression : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
