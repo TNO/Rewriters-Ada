@@ -51,7 +51,7 @@ procedure Code_Reviewer is
    function Get_Environment_Variables return String_Maps.Map is
       --  TODO: make valid on linux as well.
 
-      Return_Value : String_Maps.Map := String_Maps.Empty;
+      Return_Value : String_Maps.Map := String_Maps.Empty_Map;
       User_Name : constant String := Value ("USERNAME");
       User_Directory : constant String := "C:\Users\" & User_Name;
       Dependencies_Directory : constant String :=
@@ -66,7 +66,7 @@ procedure Code_Reviewer is
          Source_Directory & ";" &
          "C:\path\to\Rewriters-Ada\code_reviewer;" &
          User_Directory &
-           "\.config\alire\cache\dependencies\gnat_native_11.2.4_2f9c5d6d;" &
+           "\.config\alire\cache\dependencies\gnat_native_12.1.2_3126cd6f;" &
          Dependencies_Directory & "\gnatcoll_22.0.0_620c2f23;" &
          Dependencies_Directory & "\gnatcoll_gmp_22.0.0_f3732e5d\gmp;" &
          Dependencies_Directory & "\gnatcoll_iconv_22.0.0_f3732e5d\iconv;" &
