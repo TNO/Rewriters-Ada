@@ -67,6 +67,8 @@ procedure Code_Reviewer is
          "C:\path\to\Rewriters-Ada\code_reviewer;" &
          User_Directory &
            "\.config\alire\cache\dependencies\gnat_native_12.1.2_3126cd6f;" &
+         User_Directory &
+           "\.config\alire\cache\dependencies\gprbuild_22.0.1_c842bbc5;" &
          Dependencies_Directory & "\gnatcoll_22.0.0_620c2f23;" &
          Dependencies_Directory & "\gnatcoll_gmp_22.0.0_f3732e5d\gmp;" &
          Dependencies_Directory & "\gnatcoll_iconv_22.0.0_f3732e5d\iconv;" &
@@ -86,6 +88,10 @@ procedure Code_Reviewer is
          User_Directory & "\.cache\alire\msys64\mingw64\lib");
       Return_Value.Include
         ("PATH",
+         User_Directory &
+         "\.config\alire\cache\dependencies\gnat_native_12.1.2_3126cd6f\bin;" &
+         User_Directory &
+         "\.config\alire\cache\dependencies\gprbuild_22.0.1_c842bbc5\bin;" &
          User_Directory & "\.cache\alire\msys64\usr\bin;" &
          User_Directory & "\.cache\alire\msys64\usr\local\bin;" &
          User_Directory & "\.cache\alire\msys64\mingw64\bin;" &
@@ -192,8 +198,8 @@ begin
    begin
       V_C.Rewind_Not_Committed_Changes;
       Create_Patches (Filenames, Patchers);
-      Put_Line ("### done ###");
    end;
+   Put_Line ("### done ###");
 exception
    when Error : others =>
       Put_Line (Exception_Message (Error));
