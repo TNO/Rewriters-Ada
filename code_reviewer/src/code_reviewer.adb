@@ -3,7 +3,6 @@
 --                         running in a single thread...
 
 with Ada.Directories;           use Ada.Directories;
-with Ada.Environment_Variables; use Ada.Environment_Variables;
 with Ada.Exceptions;            use Ada.Exceptions;
 with Ada.Strings;               use Ada.Strings;
 with Ada.Strings.Fixed;         use Ada.Strings.Fixed;
@@ -22,7 +21,6 @@ with Version_Controls;            use Version_Controls;
 with Git_Version_Controls;        use Git_Version_Controls;
 with Mark_Utils;                  use Mark_Utils;
 with String_Vectors;              use String_Vectors;
-with String_Maps;                 use String_Maps;
 
 procedure Code_Reviewer is
    -----------------------------------------------------------
