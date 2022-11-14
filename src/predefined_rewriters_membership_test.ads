@@ -24,32 +24,47 @@ package Predefined_Rewriters_Membership_Test is
      (Match : Match_Pattern) return Boolean is
      (not Has_Side_Effect (Match, "$S_Var"));
 
-   Rewriter_Equals_To_In_Range :
-     aliased constant Rewriter_Find_And_Replace :=
+   function Accept_Same_Type (Match : Match_Pattern) return Boolean is
+     (Get_Expression_Type (Match, "$S_Var") =
+      Get_Expression_Type (Match, "$S_Val"));
+
+   function Accept_Same_Types (Match : Match_Pattern) return Boolean is
+     ((Get_Expression_Type (Match, "$S_Var") =
+       Get_Expression_Type (Match, "$S_Val1"))
+      and then
+      (Get_Expression_Type (Match, "$S_Var") =
+       Get_Expression_Type (Match, "$S_Val2")));
+
+   function Accept_Is_Membership_Test_Value
+     (Match : Match_Pattern) return Boolean is
+     (Accept_Var_No_Side_Effects (Match) and then Accept_Same_Type (Match));
+
+   function Accept_Is_Membership_Test_Values
+     (Match : Match_Pattern) return Boolean is
+     (Accept_Var_No_Side_Effects (Match) and then Accept_Same_Types (Match));
+
+   Rewriter_Equals_To_In_Range : aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
-       (Make_Pattern ("$S_Var = $S_Val1 or else $S_Var = $S_Val2",
-                      Expr_Rule),
+       (Make_Pattern ("$S_Var = $S_Val1 or else $S_Var = $S_Val2", Expr_Rule),
         Make_Pattern ("$S_Var in $S_Val1 | $S_Val2", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Values'Access));
 
    Rewriter_Combine_In_Range_And_Equal_Step :
      aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
-       (Make_Pattern ("$S_Var in $M_Vals or else $S_Var = $S_Val",
-                      Expr_Rule),
+       (Make_Pattern ("$S_Var in $M_Vals or else $S_Var = $S_Val", Expr_Rule),
         Make_Pattern ("$S_Var in $M_Vals | $S_Val", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Value'Access));
 
    Rewriter_Combine_Equal_And_In_Range_Step :
      aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
-       (Make_Pattern ("$S_Var = $S_Val or else $S_Var in $M_Vals",
-                      Expr_Rule),
+       (Make_Pattern ("$S_Var = $S_Val or else $S_Var in $M_Vals", Expr_Rule),
         Make_Pattern ("$S_Var in $S_Val | $M_Vals ", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Value'Access));
 
    Rewriter_Combine_In_Ranges_Step :
      aliased constant Rewriter_Find_And_Replace :=
@@ -67,7 +82,7 @@ package Predefined_Rewriters_Membership_Test is
           ("$S_Var /= $S_Val1 and then $S_Var /= $S_Val2", Expr_Rule),
         Make_Pattern ("$S_Var not in $S_Val1 | $S_Val2", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Values'Access));
 
    Rewriter_Combine_Not_In_Range_And_Different_Step :
      aliased constant Rewriter_Find_And_Replace :=
@@ -76,19 +91,19 @@ package Predefined_Rewriters_Membership_Test is
           ("$S_Var not in $M_Vals and then $S_Var /= $S_Val", Expr_Rule),
         Make_Pattern ("$S_Var not in $M_Vals | $S_Val", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Value'Access));
 
    Rewriter_Combine_Different_And_Not_In_Range_Step :
-       aliased constant Rewriter_Find_And_Replace :=
+     aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern
           ("$S_Var /= $S_Val and then $S_Var not in $M_Vals", Expr_Rule),
         Make_Pattern ("$S_Var not in $S_Val | $M_Vals", Expr_Rule),
         Make_Match_Accepter_Function_Access
-          (Accept_Var_No_Side_Effects'Access));
+          (Accept_Is_Membership_Test_Value'Access));
 
    Rewriter_Combine_Not_In_Ranges_Step :
-   aliased constant Rewriter_Find_And_Replace :=
+     aliased constant Rewriter_Find_And_Replace :=
      Make_Rewriter_Find_And_Replace
        (Make_Pattern
           ("$S_Var not in $M_Vals_1 and then $S_Var not in $M_Vals_2",
@@ -99,35 +114,31 @@ package Predefined_Rewriters_Membership_Test is
 
    Rewriter_Combine_In_Step : aliased constant Rewriter_Sequence :=
      Make_Rewriter_Sequence
-             (Rewriter_Combine_In_Range_And_Equal_Step
-              & Rewriter_Combine_Equal_And_In_Range_Step
-              & Rewriter_Combine_In_Ranges_Step);
+       (Rewriter_Combine_In_Range_And_Equal_Step &
+        Rewriter_Combine_Equal_And_In_Range_Step &
+        Rewriter_Combine_In_Ranges_Step);
 
    Rewriter_Combine_In : aliased constant Rewriter_Repeat :=
      Make_Rewriter_Repeat (Rewriter_Combine_In_Step);
 
    Rewriter_Combine_Not_In_Step : aliased constant Rewriter_Sequence :=
      Make_Rewriter_Sequence
-            (Rewriter_Combine_Not_In_Range_And_Different_Step
-             & Rewriter_Combine_Different_And_Not_In_Range_Step
-             & Rewriter_Combine_Not_In_Ranges_Step);
+       (Rewriter_Combine_Not_In_Range_And_Different_Step &
+        Rewriter_Combine_Different_And_Not_In_Range_Step &
+        Rewriter_Combine_Not_In_Ranges_Step);
 
    Rewriter_Combine_Not_In : aliased constant Rewriter_Repeat :=
      Make_Rewriter_Repeat (Rewriter_Combine_Not_In_Step);
 
    Rewriter_Membership_Test : aliased constant Rewriter_Sequence :=
      Make_Rewriter_Sequence
-       (Rewriter_Equals_To_In_Range
-        & Rewriter_Combine_In
-        & Rewriter_Differents_To_Not_In_Range
-        & Rewriter_Combine_Not_In
-        );
+       (Rewriter_Equals_To_In_Range & Rewriter_Combine_In &
+        Rewriter_Differents_To_Not_In_Range & Rewriter_Combine_Not_In);
    --  Rewriter for patterns involving membership tests
    --  that can be simplified.
 
    function Membership_Rewrite_Context
-     (Unit : Analysis_Unit)
-      return Node_List.Vector;
+     (Unit : Analysis_Unit) return Node_List.Vector;
    --  Nodes within the unit that are rewriten based on the membership rewrite
    --  Note: overestimation since repeating rewriters are involved
 

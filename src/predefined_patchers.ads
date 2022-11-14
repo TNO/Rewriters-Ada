@@ -5,6 +5,8 @@ with Predefined_Rewriters_Block_Statement_Simplify;
 use Predefined_Rewriters_Block_Statement_Simplify;
 with Predefined_Rewriters_Boolean_Expression_De_Morgan;
 use Predefined_Rewriters_Boolean_Expression_De_Morgan;
+with Predefined_Rewriters_Boolean_Expression_Simplify;
+use Predefined_Rewriters_Boolean_Expression_Simplify;
 with Predefined_Rewriters_Declaration_Simplify;
 use Predefined_Rewriters_Declaration_Simplify;
 with Predefined_Rewriters_If_Expression_Distribution;
@@ -92,6 +94,13 @@ package Predefined_Patchers is
           (Representation_Clauses_Rewrite_Context'Access),
         Rewriter_Representation_Clauses);
 
+   Patcher_Boolean_Expression_Simplify : aliased constant Patcher :=
+     Make_Patcher
+       ("Boolean_Expression_Simplify",
+        Make_Post_Processing_Context_Function_Access
+          (Boolean_Expression_Simplify_Rewrite_Context'Access),
+        Rewriter_Boolean_Expression_Simplify);
+
    --------------------------------------------------------------------------
    package Patchers_Vectors is new Ada.Containers.Indefinite_Vectors
      (Positive, Patcher'Class);
@@ -101,6 +110,6 @@ package Predefined_Patchers is
      Patcher_Append & Patcher_De_Morgan & Patcher_Declarations_Combine &
      Patcher_Declare_And_Overwrite & Patcher_If_Expression &
      Patcher_Membership_Test & Patcher_Quantified_Expressions &
-     Patcher_Representation_Clauses;
+     Patcher_Representation_Clauses & Patcher_Boolean_Expression_Simplify;
 
 end Predefined_Patchers;

@@ -2,14 +2,14 @@
 --  Performance can be limited by speed of virus scanner ;-(
 --                         running in a single thread...
 
-with Ada.Directories;             use Ada.Directories;
-with Ada.Environment_Variables;   use Ada.Environment_Variables;
-with Ada.Exceptions;              use Ada.Exceptions;
-with Ada.Strings;                 use Ada.Strings;
-with Ada.Strings.Fixed;           use Ada.Strings.Fixed;
-with Ada.Text_IO;                 use Ada.Text_IO;
-with Libadalang.Analysis;         use Libadalang.Analysis;
-with Rejuvenation;                use Rejuvenation;
+with Ada.Directories;           use Ada.Directories;
+with Ada.Environment_Variables; use Ada.Environment_Variables;
+with Ada.Exceptions;            use Ada.Exceptions;
+with Ada.Strings;               use Ada.Strings;
+with Ada.Strings.Fixed;         use Ada.Strings.Fixed;
+with Ada.Text_IO;               use Ada.Text_IO;
+with Libadalang.Analysis;       use Libadalang.Analysis;
+with Rejuvenation;              use Rejuvenation;
 with Rejuvenation.Environment_Variables;
 use Rejuvenation.Environment_Variables;
 with Rejuvenation.File_Utils;     use Rejuvenation.File_Utils;
@@ -29,77 +29,13 @@ procedure Code_Reviewer is
    --  Configuration
    -----------------------------------------------------------
 
-   Source_Directory : constant String := "C:\path\to\Rewriters-Ada";
-   --  Example to review the code within Rewriters-Ada
+   Source_Directory : constant String :=
+     "C:\path\to\Renaissance-Ada\src\libraries\rewriters";
 
    V_C : constant Version_Control'Class :=
      Make_Git_Version_Control (Source_Directory);
 
-   Project_Filename : constant String :=
-     Source_Directory & "\code_reviewer\code_reviewer.gpr";
-   --  Example to review the code_reviewer project
-
-   function Get_Environment_Variables return String_Maps.Map;
-   --  Environment Variables for analyzed project
-   --
-   --  Note: PATH environment variable must include
-   --        gnatpp and svn / git for the analysis of code_reviewer
-   --
-   --  TODO: extract environment variables of alire projects automatically
-   --        using `alr printenv` and regular expression matching
-
-   function Get_Environment_Variables return String_Maps.Map is
-      --  TODO: make valid on linux as well.
-
-      Return_Value : String_Maps.Map := String_Maps.Empty_Map;
-      User_Name : constant String := Value ("USERNAME");
-      User_Directory : constant String := "C:\Users\" & User_Name;
-      Dependencies_Directory : constant String :=
-        "C:\path\to\Rewriters-Ada\code_reviewer\alire\cache\dependencies";
-   begin
-      Return_Value.Include ("ALIRE", "True");
-      Return_Value.Include
-        ("C_INCLUDE_PATH",
-         User_Directory & "\.cache\alire\msys64\mingw64\include");
-      Return_Value.Include
-        ("GPR_PROJECT_PATH",
-         Source_Directory & ";" &
-         "C:\path\to\Rewriters-Ada\code_reviewer;" &
-         User_Directory &
-           "\.config\alire\cache\dependencies\gnat_native_12.1.2_3126cd6f;" &
-         User_Directory &
-           "\.config\alire\cache\dependencies\gprbuild_22.0.1_c842bbc5;" &
-         Dependencies_Directory & "\gnatcoll_22.0.0_620c2f23;" &
-         Dependencies_Directory & "\gnatcoll_gmp_22.0.0_f3732e5d\gmp;" &
-         Dependencies_Directory & "\gnatcoll_iconv_22.0.0_f3732e5d\iconv;" &
-         Dependencies_Directory & "\langkit_support_22.0.0_d43df3a9;" &
-         Dependencies_Directory & "\libadalang_22.0.0_5f365aa4;" &
-         Dependencies_Directory & "\libgpr_22.0.0_30e39dcc\gpr;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\distrib;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\dom;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\input_sources;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\sax;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\schema;" &
-         Dependencies_Directory & "\xmlada_22.0.0_b322ae27\unicode;" &
-         Dependencies_Directory & "\rejuvenation_22.0.1_a6990d10"
-        );
-      Return_Value.Include
-        ("LIBRARY_PATH",
-         User_Directory & "\.cache\alire\msys64\mingw64\lib");
-      Return_Value.Include
-        ("PATH",
-         User_Directory &
-         "\.config\alire\cache\dependencies\gnat_native_12.1.2_3126cd6f\bin;" &
-         User_Directory &
-         "\.config\alire\cache\dependencies\gprbuild_22.0.1_c842bbc5\bin;" &
-         User_Directory & "\.cache\alire\msys64\usr\bin;" &
-         User_Directory & "\.cache\alire\msys64\usr\local\bin;" &
-         User_Directory & "\.cache\alire\msys64\mingw64\bin;" &
-         "C:\Program Files\TortoiseSVN\bin;" &
-         "C:\Program Files\TortoiseGit\bin;" & "C:\Program Files\Git\cmd;" &
-         "C:\Program Files\Alire\bin;" & "C:\GNATPRO\23.0w-20220211\bin");
-      return Return_Value;
-   end Get_Environment_Variables;
+   Project_Filename : constant String := Source_Directory & "\rewriters.gpr";
 
    Patchers : constant Patchers_Vectors.Vector := Patchers_Predefined;
 
@@ -164,10 +100,9 @@ procedure Code_Reviewer is
       for P of Ps loop
          declare
             Patch_Filename : constant String :=
-              Compose ("C:\path\to\patches",
-                       --  Note: path must exist
-                       --  Path is NOT created by this program!
-                       P.Name, "patch");
+              Compose ("C:\path\to\patches", P.Name, "patch");
+            --  Note: path must exist
+            --  Path is NOT created by this program!
          begin
             Put_Line ("==== " & P.Name & " ====");
             Change_Files (Filenames, P);
@@ -192,7 +127,12 @@ procedure Code_Reviewer is
    end Get_Filenames;
 
 begin
-   Set (Get_Environment_Variables);
+   --  Set environment values of project to be analyzed
+   --  (which typically differ from the environment values
+   --   of this analyzing project)
+   Set_Alire_Project (Source_Directory);
+      --  Note: PATH environment variable must include
+      --        gnatpp and svn / git for the analysis of code_reviewer
    declare
       Filenames : constant String_Vectors.Vector := Get_Filenames;
    begin
@@ -202,5 +142,5 @@ begin
    Put_Line ("### done ###");
 exception
    when Error : others =>
-      Put_Line (Exception_Message (Error));
+      Put_Line ("Exception " & Exception_Message (Error));
 end Code_Reviewer;

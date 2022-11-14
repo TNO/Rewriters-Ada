@@ -1,9 +1,13 @@
+with Libadalang.Analysis;             use Libadalang.Analysis;
 with Libadalang.Common;               use Libadalang.Common;
 with Placeholder_Relations;           use Placeholder_Relations;
 with Rejuvenation;                    use Rejuvenation;
 with Rejuvenation.Match_Patterns;     use Rejuvenation.Match_Patterns;
 with Rejuvenation.Patterns;           use Rejuvenation.Patterns;
 with Rewriters_Find_And_Replace;      use Rewriters_Find_And_Replace;
+with Rewriters_Repeat;                use Rewriters_Repeat;
+with Rewriters_Sequence;              use Rewriters_Sequence;
+with Rewriters_Vectors;               use Rewriters_Vectors;
 with Match_Accepters_Function_Access; use Match_Accepters_Function_Access;
 
 package Predefined_Rewriters_Boolean_Expression_Simplify is
@@ -138,5 +142,31 @@ package Predefined_Rewriters_Boolean_Expression_Simplify is
    --  Variants needed?
    --  A or else (B and then A) = A  [ no side effects in B ]
    --  A and then (B or else A) = A  [ no side effects in B ]
+
+   Rewriter_Boolean_Expression_Simplify_Step : constant Rewriter_Sequence :=
+     Make_Rewriter_Sequence
+       (Rewriter_True_Or_Else &
+         Rewriter_False_Or_Else &
+         Rewriter_True_And_Then &
+         Rewriter_False_And_Then &
+         Rewriter_Or_Else_True &
+         Rewriter_Or_Else_False &
+         Rewriter_And_Then_True &
+         Rewriter_And_Then_False &
+         Rewriter_Idempotence_And &
+         Rewriter_Idempotence_Or &
+         Rewriter_Complementation_And &
+         Rewriter_Complementation_Or &
+         Rewriter_Equal_True &
+         Rewriter_Equal_False &
+         Rewriter_Different_True &
+          Rewriter_Different_False);
+
+   Rewriter_Boolean_Expression_Simplify : constant Rewriter_Repeat :=
+     Make_Rewriter_Repeat (Rewriter_Boolean_Expression_Simplify_Step);
+
+   function Boolean_Expression_Simplify_Rewrite_Context
+     (Unit : Analysis_Unit)
+      return Node_List.Vector;
 
 end Predefined_Rewriters_Boolean_Expression_Simplify;
