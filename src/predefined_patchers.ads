@@ -36,7 +36,8 @@ package Predefined_Patchers is
        ("Append",
         Make_Post_Processing_Context_Function_Access
           (Append_Rewrite_Context'Access),
-        Rewriter_Append);
+        Rewriter_Append,
+       Make_Rewriter_Sequence (Rewriter_Not & Rewriter_Minimal_Parentheses));
 
    Patcher_De_Morgan : aliased constant Patcher :=
      Make_Patcher
