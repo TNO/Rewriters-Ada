@@ -20,6 +20,8 @@ use Predefined_Rewriters_Minimal_Parentheses;
 with Predefined_Rewriters_Not; use Predefined_Rewriters_Not;
 with Predefined_Rewriters_Prefer_If_Expression;
 use Predefined_Rewriters_Prefer_If_Expression;
+with Predefined_Rewriters_Prefer_Short_Circuit;
+use Predefined_Rewriters_Prefer_Short_Circuit;
 with Predefined_Rewriters_Prefer_Quantified_Expressions;
 use Predefined_Rewriters_Prefer_Quantified_Expressions;
 with Predefined_Rewriters_Representation_Clauses;
@@ -37,7 +39,7 @@ package Predefined_Patchers is
         Make_Post_Processing_Context_Function_Access
           (Append_Rewrite_Context'Access),
         Rewriter_Append,
-       Make_Rewriter_Sequence (Rewriter_Not & Rewriter_Minimal_Parentheses));
+        Make_Rewriter_Sequence (Rewriter_Not & Rewriter_Minimal_Parentheses));
 
    Patcher_De_Morgan : aliased constant Patcher :=
      Make_Patcher
@@ -80,6 +82,13 @@ package Predefined_Patchers is
           (Membership_Rewrite_Context'Access),
         Rewriter_Membership_Test);
 
+   Patcher_Short_Circuit : aliased constant Patcher :=
+     Make_Patcher
+       ("Short_Circuit",
+        Make_Post_Processing_Context_Function_Access
+          (Prefer_Short_Circuit_Rewrite_Context'Access),
+        Rewriter_Prefer_Short_Circuit);
+
    Patcher_Quantified_Expressions : aliased constant Patcher :=
      Make_Patcher
        ("Quantified_Expressions",
@@ -110,7 +119,8 @@ package Predefined_Patchers is
    Patchers_Predefined : constant Patchers_Vectors.Vector :=
      Patcher_Append & Patcher_De_Morgan & Patcher_Declarations_Combine &
      Patcher_Declare_And_Overwrite & Patcher_If_Expression &
-     Patcher_Membership_Test & Patcher_Quantified_Expressions &
-     Patcher_Representation_Clauses & Patcher_Boolean_Expression_Simplify;
+     Patcher_Membership_Test & Patcher_Short_Circuit &
+     Patcher_Quantified_Expressions & Patcher_Representation_Clauses &
+     Patcher_Boolean_Expression_Simplify;
 
 end Predefined_Patchers;
