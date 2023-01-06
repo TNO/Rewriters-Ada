@@ -69,8 +69,8 @@ package body Test_Minimal_Parenthesis is
         ("not (f)", Expr_Rule,
          "Parenthesis are not necessary for not operator");
       Assert_Changed
-        ("(for all X of A => (X))", Expr_Rule,
-         "Parenthesis are not necessary in quantified expression");
+        ("for all X of XS => (X)", Expr_Rule,
+         "Parenthesis are not necessary at top level of quantified expression");
    end Test_Removable_Parenthesis;
 
    --  Test plumbing
