@@ -1,8 +1,16 @@
-with "config/rewriters_config.gpr";
 with "settings/rewriters_settings.gpr";
+
+--  with alire
+with "config/rewriters_config.gpr";
+
+--  without alire
+--  with "libadalang.gpr";
+--  with "../rejuvenation/rejuvenation.gpr";
+
 library project Rewriters is
 
    for Library_Name use "Rewriters";
+   --  without alire: next line has to be commented out
    for Library_Version use Project'Library_Name & ".so." & Rewriters_Config.Crate_Version;
 
    for Source_Dirs use ("src");

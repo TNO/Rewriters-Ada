@@ -1,5 +1,12 @@
-with "config/code_reviewer_config.gpr";
 with "../settings/rewriters_settings.gpr";
+
+--  with alire
+with "config/code_reviewer_config.gpr";
+
+--  without alire
+--  with "libadalang.gpr";
+--  with "../../rejuvenation/rejuvenation.gpr";
+--  with "../rewriters.gpr";
 
 project Code_Reviewer is
 

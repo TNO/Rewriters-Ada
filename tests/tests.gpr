@@ -1,5 +1,14 @@
-with "config/tests_config.gpr";
 with "../settings/rewriters_settings.gpr";
+
+--  with alire
+with "config/tests_config.gpr";
+
+--  without alire
+--  with "aunit.gpr";
+--  with "libadalang.gpr";
+--  with "../../rejuvenation/rejuvenation.gpr";
+--  with "../rewriters.gpr";
+
 project Tests is
 
    for Source_Dirs use ("src");
